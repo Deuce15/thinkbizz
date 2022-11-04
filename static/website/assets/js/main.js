@@ -10,107 +10,162 @@ $(function() {
     
     
     //===== Sticky
-    
-    // grab an element
-    var myElement = document.querySelector(".headroom");
-    // construct an instance of Headroom, passing the element
-    var headroom  = new Headroom(myElement);
-    // initialise
-    headroom.init();
-    
-    
-    $('#nav').onePageNav({
-        currentClass: 'active',
-        changeHash: true,
-        scrollSpeed: 800,
-        scrollThreshold: 0.5,
-        filter: '',
-        easing: 'swing',
-        begin: function() {
-            //I get fired when the animation is starting
-        },
-        end: function() {
-            //I get fired when the animation is ending
-        },
-        scrollChange: function($currentListItem) {
-            //I get fired when you enter a section and I pass the list item of the section
+
+    $(window).on('scroll', function (event) {
+        var scroll = $(window).scrollTop();
+        if (scroll < 20) {
+            $(".navbar-area").removeClass("sticky");
+            $(".navbar-area img").attr("src", "assets/images/logo.svg");
+        } else {
+            $(".navbar-area").addClass("sticky");
+            $(".navbar-area img").attr("src", "assets/images/logo-2.svg");
         }
     });
+
     
-    
-    $.scrollIt({
-        scrollTime: 800, 
+    //===== Section Menu Active
+
+    var scrollLink = $('.page-scroll');
+    // Active link switching
+    $(window).scroll(function () {
+        var scrollbarLocation = $(this).scrollTop();
+
+        scrollLink.each(function () {
+
+            var sectionOffset = $(this.hash).offset().top - 73;
+
+            if (sectionOffset <= scrollbarLocation) {
+                $(this).parent().addClass('active');
+                $(this).parent().siblings().removeClass('active');
+            }
+        });
     });
     
-        
-    //===== close navbar-collapse when a  clicked
     
+    //===== close navbar-collapse when a  clicked
+
     $(".navbar-nav a").on('click', function () {
         $(".navbar-collapse").removeClass("show");
     });
-    
-    
-    //===== Mobile Menu
-    
-    $(".navbar-toggler").on('click', function(){
+
+    $(".navbar-toggler").on('click', function () {
         $(this).toggleClass("active");
     });
-    
-    $(".navbar-nav a").on('click', function() {
+
+    $(".navbar-nav a").on('click', function () {
         $(".navbar-toggler").removeClass('active');
     });
     
-    var subMenu = $(".sub-menu-bar .navbar-nav .sub-menu");
     
-    if(subMenu.length) {
-        subMenu.parent('li').children('a').append(function () {
-            return '<button class="sub-nav-toggler"> <span></span> </button>';
-        });
-        
-        var subMenuToggler = $(".sub-menu-bar .navbar-nav .sub-nav-toggler");
-        
-        subMenuToggler.on('click', function() {
-            $(this).parent().parent().children(".sub-menu").slideToggle();
-            return false
-        });
-        
-    }
-    
-    
-    //===== Counter Up
-    
-    $('.counter').counterUp({
-        delay: 10,
-        time: 3000
+    //===== Sidebar
+
+    $('[href="#side-menu-left"], .overlay-left').on('click', function (event) {
+        $('.sidebar-left, .overlay-left').addClass('open');
+    });
+
+    $('[href="#close"], .overlay-left').on('click', function (event) {
+        $('.sidebar-left, .overlay-left').removeClass('open');
     });
     
     
-    //===== Isotope Project 1
+    //===== Slick
+
+    $('.slider-items-active').slick({
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        speed: 800,
+        arrows: true,
+        prevArrow: '<span class="prev"><i class="lni lni-arrow-left"></i></span>',
+        nextArrow: '<span class="next"><i class="lni lni-arrow-right"></i></span>',
+        dots: true,
+        autoplay: true,
+        autoplaySpeed: 5000,
+        responsive: [
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: 3,
+                }
+            },
+            {
+                breakpoint: 992,
+                settings: {
+                    slidesToShow: 2,
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                }
+            },
+            {
+                breakpoint: 576,
+                settings: {
+                    slidesToShow: 1,
+                    arrows: false,
+                }
+            }
+        ]
+    });
     
+    
+    //===== Isotope Project 4
+
     $('.container').imagesLoaded(function () {
         var $grid = $('.grid').isotope({
-        // options
-            transitionDuration: '1s',
-            itemSelector: '.grid-item',
-            percentPosition: true,
-            masonry: {
-                
-            }
-            
+            // options
+            transitionDuration: '1s'
         });
-        
+
         // filter items on button click
-        $('.project-menu ul').on( 'click', 'li', function() {
-          var filterValue = $(this).attr('data-filter');
-          $grid.isotope({ filter: filterValue });
+        $('.portfolio-menu ul').on('click', 'li', function () {
+            var filterValue = $(this).attr('data-filter');
+            $grid.isotope({
+                filter: filterValue
+            });
         });
-        
+
         //for menu active class
-        $('.project-menu ul li').on('click', function (event) {
+        $('.portfolio-menu ul li').on('click', function (event) {
             $(this).siblings('.active').removeClass('active');
             $(this).addClass('active');
             event.preventDefault();
         });
+    });
+    
+    
+    //===== slick Testimonial Four
+    
+    $('.testimonial-active').slick({
+        dots: false,
+        arrows: true,
+        prevArrow: '<span class="prev"><i class="lni lni-arrow-left"></i></span>',
+        nextArrow: '<span class="next"><i class="lni lni-arrow-right"></i></span>',
+        infinite: true,
+       autoplay: true,
+        autoplaySpeed: 5000,
+        speed: 800,
+        slidesToShow: 1,
+    });
+    
+    
+    //====== Magnific Popup
+    
+    $('.video-popup').magnificPopup({
+        type: 'iframe'
+        // other options
+    });
+    
+    
+    //===== Magnific Popup
+    
+    $('.image-popup').magnificPopup({
+      type: 'image',
+      gallery:{
+        enabled:true
+      }
     });
     
     
@@ -136,115 +191,20 @@ $(function() {
     });
     
     
-    //=====  services progress
-
-    if($('.our-services-progress').length){
-        $('.our-services-progress').appear(function(){
-            Circles.create({
-                id: 'circles-1',
-                radius: 50,
-                value: 95,
-                maxValue: 100,
-                width: 3,
-                text: function(value){return value + '%';},
-                colors: ['#f0f0f0', '#f14836'],
-                duration: 1000,
-                wrpClass: 'circles-wrp',
-                textClass: 'circles-text',
-                styleWrapper: true,
-                styleText: true,
-            });
-        });
-    }
-    
-    if($('.our-services-progress').length){
-        $('.our-services-progress').appear(function(){
-            Circles.create({
-                id: 'circles-2',
-                radius: 50,
-                value: 85,
-                maxValue: 100,
-                width: 3,
-                text: function(value){return value + '%';},
-                colors: ['#f0f0f0', '#f14836'],
-                duration: 1000,
-                wrpClass: 'circles-wrp',
-                textClass: 'circles-text',
-                styleWrapper: true,
-                styleText: true,
-            });
-        });
-    }
-    
-    if($('.our-services-progress').length){
-        $('.our-services-progress').appear(function(){
-            Circles.create({
-                id: 'circles-3',
-                radius: 50,
-                value: 75,
-                maxValue: 100,
-                width: 3,
-                text: function(value){return value + '%';},
-                colors: ['#f0f0f0', '#f14836'],
-                duration: 1000,
-                wrpClass: 'circles-wrp',
-                textClass: 'circles-text',
-                styleWrapper: true,
-                styleText: true,
-            });
-        });
-    }
-    
-    if($('.our-services-progress').length){
-        $('.our-services-progress').appear(function(){
-            Circles.create({
-                id: 'circles-4',
-                radius: 50,
-                value: 70,
-                maxValue: 100,
-                width: 3,
-                text: function(value){return value + '%';},
-                colors: ['#f0f0f0', '#f14836'],
-                duration: 1000,
-                wrpClass: 'circles-wrp',
-                textClass: 'circles-text',
-                styleWrapper: true,
-                styleText: true,
-            });
-        });
-    }
-   
-    
-    //===== slick Testimonial
-    
-    $('.testimonial-active').slick({
-        dots: false,
-        arrows: true,
-        prevArrow: '<span class="prev"><i class="lni-arrow-left"></i></span>',
-        nextArrow: '<span class="next"><i class="lni-arrow-right"></i></span>',
-        infinite: true,
-        autoplay: true,
-        autoplaySpeed: 5000,
-        speed: 800,
-        slidesToShow: 1,
-    });
-    
-    
-    //===== Magnific Popup
-    
-    $('.image-popup').magnificPopup({
-      type: 'image',
-      gallery:{
-        enabled:true
-      }
-    });
+    //===== 
     
     
     
     
-    //=====  WOW active
     
-    new WOW().init();
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
