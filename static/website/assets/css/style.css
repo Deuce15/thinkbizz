@@ -2357,7 +2357,8 @@ p {
       color: #fff; }
     .navbar-brand {
       position: fixed;
-      font-size: 16px;}
+      font-size: 20px;
+      font-weight: bolder;}
 
 /*===========================
        10.SLIDER css 
